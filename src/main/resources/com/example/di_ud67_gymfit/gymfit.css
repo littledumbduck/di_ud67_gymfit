@@ -1,0 +1,128 @@
+/*
+ * GymFit Manager · paleta de 4 colores
+ *   Neutro claro  #F4F6F8 (fondo) y blanco (paneles)
+ *   Texto         #1F2933  -> contraste ~15:1 sobre blanco
+ *   Acción        #1E6BB8  -> contraste ~5,6:1 con texto blanco (botón principal, foco, selección)
+ *   Peligro       #B42318  -> contraste ~6,5:1 sobre blanco (solo acciones destructivas y errores)
+ * Tipografía: Segoe UI (fuente del sistema en Windows), 13 px; títulos 18 px en negrita.
+ */
+
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 13px;
+    -fx-background-color: #F4F6F8;
+    -fx-accent: #1E6BB8;
+    -fx-focus-color: #1E6BB8;
+    -fx-faint-focus-color: #1E6BB822;
+    -fx-text-base-color: #1F2933;
+}
+
+/* ---------- Paneles ---------- */
+.panel {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #D9DEE3;
+    -fx-border-radius: 8;
+    -fx-padding: 16;
+}
+
+.scroll-formulario,
+.scroll-formulario > .viewport {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.titulo-panel {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1F2933;
+}
+
+.texto-ayuda {
+    -fx-text-fill: #52606D; /* gris oscuro: ~6,4:1 sobre blanco */
+    -fx-font-size: 12px;
+}
+
+/* ---------- Botones ---------- */
+.boton-principal {
+    -fx-background-color: #1E6BB8;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 4;
+    -fx-padding: 6 18;
+}
+
+.boton-principal:hover {
+    -fx-background-color: #185A9C;
+}
+
+.boton-principal:focused {
+    -fx-background-color: #1E6BB8, white, #1E6BB8;
+    -fx-background-insets: 0, 1, 2;
+}
+
+.boton-peligro {
+    -fx-background-color: white;
+    -fx-border-color: #B42318;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: #B42318;
+}
+
+.boton-peligro:hover {
+    -fx-background-color: #FDECEA;
+}
+
+/* ---------- Iconos (Ikonli) ---------- */
+.icono {
+    -fx-icon-color: #1F2933;
+}
+
+.icono-claro {
+    -fx-icon-color: white;
+}
+
+.icono-peligro {
+    -fx-icon-color: #B42318;
+}
+
+/* ---------- Menú contextual: la acción destructiva en rojo ---------- */
+.menu-peligro .label {
+    -fx-text-fill: #B42318;
+}
+
+.menu-peligro:focused .label {
+    -fx-text-fill: white;
+}
+
+.menu-peligro:focused {
+    -fx-background-color: #B42318;
+}
+
+/* ---------- Tabla ---------- */
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+.table-row-cell.fila-baja .table-cell {
+    -fx-text-fill: #616E7C;
+    -fx-font-style: italic;
+}
+
+.table-row-cell.fila-congelada .table-cell {
+    -fx-text-fill: #1E6BB8;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+/* ---------- Barra de estado ---------- */
+.barra-estado {
+    -fx-background-color: #E4E8EC;
+    -fx-padding: 6 16;
+    -fx-border-color: #D9DEE3;
+    -fx-border-width: 1 0 0 0;
+}

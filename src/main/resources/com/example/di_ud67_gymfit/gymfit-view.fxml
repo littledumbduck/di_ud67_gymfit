@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+  GymFit Manager · Alta de socio (rediseño, frame 1280 x 800).
+  Los iconos de Ikonli se ponen desde el controlador para que Scene Builder
+  abra este archivo sin necesidad de importar librerías externas.
+-->
+<BorderPane fx:id="raiz" prefHeight="800.0" prefWidth="1280.0" stylesheets="@gymfit.css"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.di_ud67_gymfit.GymFitController">
+
+   <!-- ============ MENÚS + BARRA DE HERRAMIENTAS ============ -->
+   <top>
+      <VBox>
+         <MenuBar>
+            <Menu text="_Archivo">
+               <MenuItem text="Nuevo socio" accelerator="Shortcut+N" onAction="#onNuevo"/>
+               <MenuItem text="Guardar socio" accelerator="Shortcut+S" onAction="#onGuardar"/>
+               <SeparatorMenuItem/>
+               <MenuItem text="Imprimir listado" accelerator="Shortcut+P" onAction="#onImprimir"/>
+               <SeparatorMenuItem/>
+               <MenuItem text="Salir" accelerator="Shortcut+Q" onAction="#onSalir"/>
+            </Menu>
+            <Menu text="_Editar">
+               <MenuItem fx:id="menuDeshacer" text="Deshacer" accelerator="Shortcut+Z" onAction="#onDeshacer"/>
+               <SeparatorMenuItem/>
+               <MenuItem text="Cortar" accelerator="Shortcut+X" onAction="#onCortar"/>
+               <MenuItem text="Copiar" accelerator="Shortcut+C" onAction="#onCopiar"/>
+               <MenuItem text="Pegar" accelerator="Shortcut+V" onAction="#onPegar"/>
+               <SeparatorMenuItem/>
+               <MenuItem text="Borrar formulario…" onAction="#onBorrarFormulario"/>
+            </Menu>
+            <Menu text="_Ver">
+               <MenuItem text="Buscar socio" accelerator="Shortcut+F" onAction="#onBuscar"/>
+               <MenuItem text="Mostrar todos los socios" onAction="#onMostrarTodos"/>
+            </Menu>
+            <Menu text="_Socios">
+               <MenuItem text="Nuevo socio" onAction="#onNuevo"/>
+               <MenuItem fx:id="menuEditarSocio" text="Editar socio" accelerator="Shortcut+E" onAction="#onEditar"/>
+               <MenuItem fx:id="menuCongelar" text="Congelar / reactivar" onAction="#onCongelar"/>
+               <SeparatorMenuItem/>
+               <MenuItem fx:id="menuDarDeBaja" text="Dar de baja…  (Supr)" onAction="#onDarDeBaja"/>
+            </Menu>
+            <Menu text="_Cuotas">
+               <MenuItem fx:id="menuRenovar" text="Renovar cuota" onAction="#onRenovar"/>
+               <MenuItem fx:id="menuPagos" text="Ver pagos" onAction="#onPagos"/>
+            </Menu>
+            <Menu text="_Informes">
+               <MenuItem text="Listado de socios" onAction="#onImprimir"/>
+               <MenuItem fx:id="menuImprimirFicha" text="Ficha del socio" onAction="#onImprimirFicha"/>
+            </Menu>
+            <Menu text="A_yuda">
+               <MenuItem text="Atajos de teclado" accelerator="F1" onAction="#onAyuda"/>
+               <MenuItem text="Acerca de GymFit Manager" onAction="#onAcercaDe"/>
+            </Menu>
+         </MenuBar>
+
+         <ToolBar>
+            <Button fx:id="btnNuevo" text="Nuevo" onAction="#onNuevo">
+               <tooltip><Tooltip text="Nuevo socio (Ctrl+N)"/></tooltip>
+            </Button>
+            <Button fx:id="btnGuardarBarra" text="Guardar" onAction="#onGuardar">
+               <tooltip><Tooltip text="Guardar socio (Ctrl+S)"/></tooltip>
+            </Button>
+            <Button fx:id="btnDeshacer" text="Deshacer" onAction="#onDeshacer">
+               <tooltip><Tooltip text="Deshacer la última acción (Ctrl+Z)"/></tooltip>
+            </Button>
+            <Separator orientation="VERTICAL"/>
+            <Button fx:id="btnImprimir" text="Imprimir" onAction="#onImprimir">
+               <tooltip><Tooltip text="Imprimir listado de socios (Ctrl+P)"/></tooltip>
+            </Button>
+            <Button fx:id="btnAyuda" text="Ayuda" onAction="#onAyuda">
+               <tooltip><Tooltip text="Ver los atajos de teclado (F1)"/></tooltip>
+            </Button>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblIconoBuscar" text="Buscar"/>
+            <TextField fx:id="txtBuscar" prefWidth="280.0" promptText="Nombre o apellidos (Ctrl+F)">
+               <tooltip><Tooltip text="Filtra la tabla mientras escribes. Esc para ver todos."/></tooltip>
+            </TextField>
+         </ToolBar>
+      </VBox>
+   </top>
+
+   <!-- ============ CONTENIDO: TABLA (izq.) + FORMULARIO (dcha.) ============ -->
+   <center>
+      <HBox spacing="16.0">
+         <padding><Insets bottom="16.0" left="16.0" right="16.0" top="16.0"/></padding>
+
+         <!-- Tabla de socios con título y encabezados -->
+         <VBox spacing="6.0" styleClass="panel" HBox.hgrow="ALWAYS">
+            <Label fx:id="lblTituloTabla" styleClass="titulo-panel" text="Socios"/>
+            <Label styleClass="texto-ayuda" text="Doble clic en un socio para editarlo · clic derecho para más opciones"/>
+            <TableView fx:id="tablaSocios" VBox.vgrow="ALWAYS">
+               <columns>
+                  <TableColumn fx:id="colNombre" prefWidth="190.0" text="Nombre y apellidos"/>
+                  <TableColumn fx:id="colNacimiento" prefWidth="110.0" text="Nacimiento"/>
+                  <TableColumn fx:id="colProvincia" prefWidth="100.0" text="Provincia"/>
+                  <TableColumn fx:id="colCuota" prefWidth="80.0" text="Cuota"/>
+                  <TableColumn fx:id="colClase" prefWidth="90.0" text="Clase"/>
+                  <TableColumn fx:id="colEstado" prefWidth="80.0" text="Estado"/>
+               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+               </columnResizePolicy>
+               <!-- Menú contextual: 7 opciones, sin cascadas; la destructiva, al final y separada -->
+               <contextMenu>
+                  <ContextMenu>
+                     <items>
+                        <MenuItem fx:id="ctxEditar" text="Editar" onAction="#onEditar"/>
+                        <MenuItem fx:id="ctxRenovar" text="Renovar cuota" onAction="#onRenovar"/>
+                        <MenuItem fx:id="ctxCongelar" text="Congelar / reactivar" onAction="#onCongelar"/>
+                        <MenuItem fx:id="ctxPagos" text="Ver pagos" onAction="#onPagos"/>
+                        <MenuItem fx:id="ctxNotas" text="Notas" onAction="#onNotas"/>
+                        <MenuItem fx:id="ctxImprimirFicha" text="Imprimir ficha" onAction="#onImprimirFicha"/>
+                        <SeparatorMenuItem/>
+                        <MenuItem fx:id="ctxDarDeBaja" styleClass="menu-peligro" text="Dar de baja…" onAction="#onDarDeBaja"/>
+                     </items>
+                  </ContextMenu>
+               </contextMenu>
+            </TableView>
+         </VBox>
+
+         <!-- Formulario de alta: un control adecuado para cada dato -->
+         <ScrollPane fitToWidth="true" minWidth="500.0" prefWidth="500.0" styleClass="scroll-formulario">
+            <VBox spacing="12.0" styleClass="panel">
+               <Label fx:id="lblTituloFormulario" styleClass="titulo-panel" text="Alta de socio nuevo"/>
+               <Label styleClass="texto-ayuda" text="Los campos marcados con * son obligatorios."/>
+
+               <GridPane hgap="12.0" vgap="12.0">
+                  <columnConstraints>
+                     <ColumnConstraints minWidth="140.0" prefWidth="140.0"/>
+                     <ColumnConstraints hgrow="ALWAYS"/>
+                  </columnConstraints>
+
+                  <!-- Texto libre: campo con ejemplo -->
+                  <Label text="Nombre *" GridPane.rowIndex="0"/>
+                  <TextField fx:id="txtNombre" promptText="ej.: Laura" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                  <Label text="Apellidos *" GridPane.rowIndex="1"/>
+                  <TextField fx:id="txtApellidos" promptText="ej.: Gómez Ruiz" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                  <!-- Fecha: selector de fecha con formato único -->
+                  <Label text="Fecha de nacimiento *" GridPane.rowIndex="2"/>
+                  <DatePicker fx:id="dpNacimiento" maxWidth="1.7976931348623157E308" promptText="dd/mm/aaaa · ej.: 14/05/2003"
+                              GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                  <!-- Una opción entre pocas: botones de radio -->
+                  <Label text="Sexo" GridPane.rowIndex="3"/>
+                  <HBox spacing="16.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <RadioButton text="Hombre">
+                        <toggleGroup><ToggleGroup fx:id="grupoSexo"/></toggleGroup>
+                     </RadioButton>
+                     <RadioButton text="Mujer" toggleGroup="$grupoSexo"/>
+                     <RadioButton text="Otro" toggleGroup="$grupoSexo"/>
+                  </HBox>
+
+                  <!-- Una entre muchas: desplegable (se puede escribir la inicial para saltar) -->
+                  <Label text="Provincia *" GridPane.rowIndex="4"/>
+                  <ComboBox fx:id="cbProvincia" maxWidth="1.7976931348623157E308" promptText="Elige una provincia"
+                            visibleRowCount="10" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                  <!-- Una opción entre pocas: botones de radio -->
+                  <Label text="Tipo de cuota *" GridPane.rowIndex="5"/>
+                  <FlowPane fx:id="paneCuota" hgap="16.0" vgap="8.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <RadioButton text="Básica">
+                        <toggleGroup><ToggleGroup fx:id="grupoCuota"/></toggleGroup>
+                     </RadioButton>
+                     <RadioButton text="Plus" toggleGroup="$grupoCuota"/>
+                     <RadioButton text="Premium" toggleGroup="$grupoCuota"/>
+                     <RadioButton text="Joven" toggleGroup="$grupoCuota"/>
+                     <RadioButton text="Senior" toggleGroup="$grupoCuota"/>
+                  </FlowPane>
+
+                  <!-- Una entre muchas (~10): desplegable -->
+                  <Label text="Clase dirigida" GridPane.rowIndex="6"/>
+                  <ComboBox fx:id="cbClase" maxWidth="1.7976931348623157E308" promptText="Elige una clase (opcional)"
+                            visibleRowCount="10" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
+
+                  <!-- Varias opciones a la vez: casillas -->
+                  <Label text="Extras" GridPane.rowIndex="7"/>
+                  <HBox spacing="16.0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                     <CheckBox fx:id="chkTaquilla" text="Taquilla"/>
+                     <CheckBox fx:id="chkToalla" text="Toalla"/>
+                     <CheckBox fx:id="chkParking" text="Parking"/>
+                  </HBox>
+
+                  <!-- Texto con formato: campo con ejemplo -->
+                  <Label text="IBAN" GridPane.rowIndex="8"/>
+                  <TextField fx:id="txtIban" promptText="ej.: ES12 3456 7890 1234 5678 9012" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+               </GridPane>
+
+               <Separator/>
+
+               <!-- Botones: la destructiva a la izquierda y separada; la principal destacada a la derecha -->
+               <HBox alignment="CENTER_LEFT" spacing="8.0">
+                  <Button fx:id="btnBorrarFormulario" styleClass="boton-peligro" text="Borrar formulario…" onAction="#onBorrarFormulario">
+                     <tooltip><Tooltip text="Vacía todos los campos (pide confirmación)"/></tooltip>
+                  </Button>
+                  <Pane HBox.hgrow="ALWAYS"/>
+                  <Button cancelButton="true" text="Cancelar" onAction="#onCancelar"/>
+                  <Button fx:id="btnGuardar" defaultButton="true" styleClass="boton-principal" text="Guardar socio" onAction="#onGuardar">
+                     <tooltip><Tooltip text="Guardar socio (Ctrl+S o Intro)"/></tooltip>
+                  </Button>
+               </HBox>
+            </VBox>
+         </ScrollPane>
+      </HBox>
+   </center>
+
+   <!-- ============ BARRA DE ESTADO ============ -->
+   <bottom>
+      <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="barra-estado">
+         <Label fx:id="lblEstado" maxWidth="1.7976931348623157E308" text="Listo." HBox.hgrow="ALWAYS"/>
+         <Label styleClass="texto-ayuda" text="Ctrl+N nuevo · Ctrl+S guardar · Ctrl+F buscar · Ctrl+Z deshacer · F1 ayuda"/>
+      </HBox>
+   </bottom>
+</BorderPane>
